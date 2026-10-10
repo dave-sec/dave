@@ -1,0 +1,6 @@
+{
+  gateway: {
+    // bind: "lan",
+    port: 18789,
+  },
+}

@@ -1,0 +1,28 @@
+name: "Dave - AI stack security audit"
+description: "Audit docker-compose files of self-hosted AI stacks and upload results to GitHub Code Scanning."
+branding:
+  icon: shield
+  color: blue
+inputs:
+  path:
+    description: "Directory or compose file to audit"
+    default: "."
+  fail-on:
+    description: "Fail the job when a finding is at least this severe (info, low, medium, high, critical)"
+    default: "high"
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - shell: bash
+      run: pip install "${{ github.action_path }}"
+    - shell: bash
+      run: dave compose "${{ inputs.path }}" --format sarif -o dave.sarif --fail-on "${{ inputs.fail-on }}" || echo "DAVE_FAILED=1" >> "$GITHUB_ENV"
+    - uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: dave.sarif
+    - shell: bash
+      run: test -z "$DAVE_FAILED"

@@ -1,0 +1,5 @@
+- id: dave
+  name: dave (AI stack security audit)
+  entry: dave compose
+  language: python
+  files: (^|/)(docker-)?compose(\.[\w-]+)?\.ya?ml$

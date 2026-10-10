@@ -1,0 +1,9 @@
+services:
+  llm:
+    image: vllm/vllm-openai:v0.11.0
+    user: "1000"
+    ports:
+      - "8000"
+      - "[::1]:8001:8000"
+      - target: 8000
+        published: 8002

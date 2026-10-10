@@ -1,0 +1,5 @@
+# Copy to .dave.yml to silence rules you have reviewed.
+ignore:
+  - DV006            # we pin images through Renovate instead
+ignore_services:
+  DV005: [ollama]    # rootless Docker on this host

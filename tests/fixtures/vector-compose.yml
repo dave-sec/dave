@@ -1,0 +1,20 @@
+services:
+  ollama:
+    image: ollama/ollama:0.1.30
+    user: "1000:1000"
+    ports:
+      - "127.0.0.1:11434:11434"
+  qdrant:
+    image: qdrant/qdrant:v1.12.0
+    ports:
+      - "127.0.0.1:6333:6333"
+  qdrant-secure:
+    image: qdrant/qdrant:v1.12.0
+    environment:
+      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY}
+  legacy:  # dave:ignore DV006
+    image: n8nio/n8n
+  silenced:  # dave:ignore
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"

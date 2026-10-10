@@ -1,0 +1,6 @@
+{
+  "gateway": {
+    "bind": "loopback",
+    "remote": { "bind": "lan" }
+  }
+}

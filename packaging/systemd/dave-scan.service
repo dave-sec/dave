@@ -1,0 +1,11 @@
+[Unit]
+Description=Dave - scan de sécurité de la stack d'IA
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/default/dave
+ExecStart=/usr/lib/dave/dave-daily.sh
+Nice=19
+IOSchedulingClass=idle

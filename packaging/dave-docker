@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Lance Dave dans Docker comme s'il était installé : les chemins de l'hôte gardent le même nom dans le conteneur.
+set -euo pipefail
+[ -f /etc/default/dave ] && . /etc/default/dave
+IMAGE="${DAVE_IMAGE:-dave:latest}"
+
+RW=ro
+case " $* " in *" fix "*) case " $* " in *" --write "*|*" -i "*|*" --interactive "*) RW=rw ;; esac ;; esac
+MOUNTS=(-v "$PWD:$PWD:$RW")
+PREV=""
+for a in "$@"; do
+  case "$PREV" in
+    -o|--output|--json-out|--badge)      # fichier de sortie : son dossier doit être accessible en écriture
+      d="$(dirname "$(realpath -m "$a")")"; mkdir -p "$d"; MOUNTS+=(-v "$d:$d:rw") ;;
+    *) case "$a" in /*) [ -e "$a" ] && MOUNTS+=(-v "$(realpath "$a"):$(realpath "$a"):$RW") ;; esac ;;
+  esac
+  PREV="$a"
+done
+for p in /etc/ufw /etc/systemd/system /lib/systemd/system /var/lib/casaos/apps "$HOME/.openclaw" \
+         "$HOME/.cursor" "$HOME/.config/Claude"; do
+  [ -e "$p" ] && MOUNTS+=(-v "$p:$p:ro")
+done
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/dave"; mkdir -p "$CACHE" 2>/dev/null && MOUNTS+=(-v "$CACHE:$CACHE")
+TTY=(); [ -t 0 ] && [ -t 1 ] && TTY=(-it)
+CAPS=(--cap-drop ALL); [ "$(id -u)" -eq 0 ] && CAPS+=(--cap-add DAC_READ_SEARCH)
+[ "$RW" = rw ] && [ "$(id -u)" -eq 0 ] && CAPS+=(--cap-add DAC_OVERRIDE --cap-add CHOWN --cap-add FOWNER)
+
+exec docker run --rm "${TTY[@]}" --network host --user "$(id -u):$(id -g)" -e HOME="$HOME" -e DAVE_LANG -e XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}" \
+  -e DAVE_INSTALL_METHOD=docker-wrapper -e DAVE_NO_UPDATE_CHECK \
+  --read-only --tmpfs /tmp --security-opt no-new-privileges "${CAPS[@]}" \
+  --cpus 1 --memory 256m -w "$PWD" "${MOUNTS[@]}" "$IMAGE" "$@"

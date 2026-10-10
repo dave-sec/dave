@@ -1,0 +1,10 @@
+// ~/.openclaw/openclaw.json (JSON5)
+{
+  agent: { model: "local/qwen3" },
+  gateway: {
+    port: 18789,
+    /* exposed to the LAN for the tablet */
+    bind: "lan",
+    auth: { mode: "token", token: "${OPENCLAW_TOKEN}" },
+  },
+}

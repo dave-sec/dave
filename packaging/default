@@ -1,0 +1,14 @@
+# Configuration de Dave (/etc/default/dave)
+# Dossier des rapports et de dave.yml
+DAVE_BASE=/var/lib/dave
+# auto | native | docker
+DAVE_MODE=auto
+DAVE_IMAGE=dave:latest
+DAVE_LANG=fr
+# Dossiers de docker-compose à scanner (vide = détection : /var/lib/casaos/apps, /opt/stacks, /srv/docker)
+DAVE_SCAN_DIRS=
+# Dossier de configuration d'OpenClaw, si installé (ex. /home/fv/.openclaw)
+OPENCLAW_DIR=
+# Alerte Discord uniquement s'il y a de nouveaux problèmes
+DISCORD_WEBHOOK=
+DAVE_KEEP_DAYS=30

@@ -1,0 +1,29 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_ORIGINS=*
+    volumes:
+      - ollama:/root/.ollama
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    ports:
+      - "3000:8080"
+    environment:
+      WEBUI_AUTH: "False"
+      OPENAI_API_KEY: sk-test-not-a-real-key
+      WEBUI_SECRET_KEY: ${WEBUI_SECRET_KEY}
+  n8n:
+    image: n8nio/n8n
+    network_mode: host
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  db:
+    image: postgres:16.4
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+volumes:
+  ollama:

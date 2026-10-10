@@ -1,0 +1,1 @@
+{ "gateway": { "auth": { "mode": "password" }, "bind": "tailnet", "port": 19000 } }

@@ -1,0 +1,5 @@
+services:
+  openclaw-gateway:
+    image: example/openclaw-gateway:2026.3.2
+    ports:
+      - "18789:18789"

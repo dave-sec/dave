@@ -1,0 +1,17 @@
+name: ollama
+services:
+  ollama:
+    image: ollama/ollama:0.12.3
+    user: "1000:1000"
+    ports:
+      - target: 11434
+        published: "11434"
+        protocol: tcp
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:v0.6.30
+    ports:
+      - target: 8080
+        published: "3000"
+        protocol: tcp
+x-casaos:
+  main: ollama
